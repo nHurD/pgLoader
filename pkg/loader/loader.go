@@ -170,7 +170,7 @@ func (l *Loader) convertData(data []string) []interface{} {
 					Warnf("Unable to convert %v to int", v)
 				result[i] = v
 			}
-		case "real", "double precision":
+		case "real", "double precision", "numeric":
 			if v == "" {
 				result[i] = nil
 				continue
@@ -182,12 +182,22 @@ func (l *Loader) convertData(data []string) []interface{} {
 				result[i] = v
 			}
 		case "boolean":
+			if v == "" {
+				result[i] = nil
+				continue
+			}
 			result[i], err = strconv.ParseBool(v)
 			if err != nil {
 				l.log.WithError(err).
 					Warnf("Unable to convert %v to boolean", v)
 				result[i] = v
 			}
+		case "date", "ARRAY":
+			if v == "" {
+				result[i] = nil
+				continue
+			}
+			fallthrough
 		default:
 			result[i] = v
 		}
